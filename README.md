@@ -43,62 +43,85 @@ A production-ready, comprehensive sitemap generator specifically designed for Fi
 - 1GB+ disk space (for database and sitemaps)
 - Internet connection
 
-## 🛠️ Installation
+## 🛠️ Installation & Quick Start
 
-### 1. Clone Repository
+### Option 1: Quick Start (Recommended)
+
+The easiest way to get started is using the quick start script that handles everything automatically:
 
 ```bash
-git clone <repository-url>
+# Clone the repository
+git clone https://github.com/nandini-asadi/finploy-sitemap-generator.git
 cd finploy-sitemap-generator
+
+# Run the quick start script (handles setup + execution)
+./quick_start.sh
 ```
 
-### 2. Install Dependencies
+**What the quick start script does:**
+- ✅ Creates virtual environment if missing
+- ✅ Installs all Python dependencies
+- ✅ Installs Playwright browsers
+- ✅ Runs the sitemap generator with default settings
+- ✅ Shows you where the generated files are located
+
+### Option 2: Production Script (Advanced)
+
+For more control and production use, use the main runner script:
 
 ```bash
-# Install Python dependencies
+# Clone the repository
+git clone https://github.com/nandini-asadi/finploy-sitemap-generator.git
+cd finploy-sitemap-generator
+
+# Use the production script with custom options
+./run_sitemap_generator.sh --help                    # See all options
+./run_sitemap_generator.sh                           # Run with defaults
+./run_sitemap_generator.sh --max-depth 3 --clean    # Custom settings
+```
+
+### Option 3: Manual Python Execution (For Development)
+
+If you want to run the Python module directly (useful for development):
+
+```bash
+# Set up virtual environment manually
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-
-# Install Playwright browsers
 playwright install chromium
-```
 
-### 3. Verify Installation
-
-```bash
+# Run the Python module directly
 python -m src.sitemap_generator.main --help
-```
-
-## 🚀 Quick Start
-
-### Basic Usage
-
-```bash
-# Generate sitemaps for both Finploy domains
-python -m src.sitemap_generator.main
-
-# Custom configuration
-python -m src.sitemap_generator.main \
-    --max-depth 3 \
-    --max-concurrent 5 \
-    --crawl-delay 2.0 \
-    --output-dir ./my-sitemaps/
-```
-
-### Environment Variables
-
-```bash
-# Set environment variables for configuration
-export FINPLOY_BASE_URLS="https://www.finploy.com,https://finploy.co.uk"
-export FINPLOY_MAX_DEPTH=5
-export FINPLOY_MAX_CONCURRENT=10
-export FINPLOY_CRAWL_DELAY=1.0
-
 python -m src.sitemap_generator.main
 ```
 
-## 📖 Usage Guide
+## 🚀 Usage Guide
 
-### Command Line Options
+### Recommended Approach: Use the Scripts
+
+**For most users, use the scripts instead of Python commands directly:**
+
+```bash
+# Quick and easy (auto-setup + run)
+./quick_start.sh
+
+# Production use with custom settings
+./run_sitemap_generator.sh --max-concurrent 15 --crawl-delay 0.5
+
+# Conservative crawling
+./run_sitemap_generator.sh --max-concurrent 3 --crawl-delay 3.0 --disable-dynamic
+
+# Debug mode
+./run_sitemap_generator.sh --debug --log-level DEBUG
+
+# Clean start
+./run_sitemap_generator.sh --clean
+```
+
+### Script Options
+
+The `run_sitemap_generator.sh` script supports all these options:
 
 | Option | Default | Description |
 |--------|---------|-------------|
@@ -114,46 +137,25 @@ python -m src.sitemap_generator.main
 | `--clean` | False | Clean database before starting |
 | `--disable-dynamic` | False | Disable dynamic content crawling |
 | `--disable-robots` | False | Disable robots.txt checking |
-| `--export-debug` | None | Export debug info to file |
 | `--validate-only` | False | Only validate existing sitemaps |
+| `--dry-run` | False | Test configuration without running |
 
-### Advanced Examples
+### Why Use Scripts Instead of Python Commands?
 
-#### Large Scale Crawling
-```bash
-python -m src.sitemap_generator.main \
-    --max-depth 6 \
-    --max-concurrent 20 \
-    --crawl-delay 0.5 \
-    --log-level DEBUG \
-    --log-file crawl.log
-```
+The bash scripts provide several advantages:
 
-#### Conservative Crawling
-```bash
-python -m src.sitemap_generator.main \
-    --max-depth 3 \
-    --max-concurrent 3 \
-    --crawl-delay 3.0 \
-    --disable-dynamic
-```
-
-#### Resume After Interruption
-```bash
-# Database persists URLs, so you can resume
-python -m src.sitemap_generator.main
-```
-
-#### Clean Start
-```bash
-python -m src.sitemap_generator.main --clean
-```
+1. **Automatic Setup**: Handle virtual environment and dependencies
+2. **Validation**: Check system requirements before running
+3. **Error Handling**: Better error messages and recovery
+4. **Logging**: Automatic log file creation and management
+5. **Safety**: Prevent multiple instances and handle crashes
+6. **Convenience**: No need to remember Python module paths
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Create a `.env` file or set environment variables:
+The project includes a `.env` file with default settings:
 
 ```bash
 # Base URLs to crawl
@@ -177,32 +179,7 @@ FINPLOY_ENABLE_DYNAMIC=true
 FINPLOY_USER_AGENT=Finploy-Sitemap-Generator/1.0
 ```
 
-### YAML Configuration (Optional)
-
-Create `config/crawler_config.yaml`:
-
-```yaml
-base_urls:
-  - https://www.finploy.com
-  - https://finploy.co.uk
-
-crawling:
-  max_depth: 5
-  max_concurrent_requests: 10
-  crawl_delay: 1.0
-  request_timeout: 30
-
-paths:
-  database_path: data/urls.db
-  sitemap_output_dir: data/sitemap/
-
-features:
-  enable_dynamic_crawling: true
-  respect_robots_txt: true
-
-http:
-  user_agent: Finploy-Sitemap-Generator/1.0
-```
+You can modify the `.env` file or override with command line options.
 
 ## 📊 Output
 
@@ -240,42 +217,13 @@ data/sitemap/
 </urlset>
 ```
 
-### Database Schema
-
-SQLite database stores crawling state:
-
-```sql
--- URLs table
-CREATE TABLE urls (
-    id INTEGER PRIMARY KEY,
-    url TEXT UNIQUE NOT NULL,
-    discovered_at TIMESTAMP,
-    last_crawled TIMESTAMP,
-    status_code INTEGER,
-    content_type TEXT,
-    is_dynamic BOOLEAN,
-    depth INTEGER,
-    parent_url TEXT,
-    crawl_status TEXT,
-    error_message TEXT
-);
-
--- Crawl queue
-CREATE TABLE crawl_queue (
-    id INTEGER PRIMARY KEY,
-    url TEXT UNIQUE NOT NULL,
-    priority INTEGER,
-    added_at TIMESTAMP,
-    is_processing BOOLEAN
-);
-```
-
 ## 🧪 Testing
 
 ### Run Tests
 
 ```bash
-# Install test dependencies
+# Install test dependencies (if not already installed)
+source venv/bin/activate
 pip install pytest pytest-asyncio
 
 # Run all tests
@@ -286,18 +234,9 @@ pytest tests/test_url_manager.py
 pytest tests/test_crawler.py
 pytest tests/test_sitemap_writer.py
 
-# Run with coverage
-pytest --cov=src/sitemap_generator
-
 # Run with verbose output
 pytest -v
 ```
-
-### Test Categories
-
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: Component interaction testing
-- **Mock Tests**: External dependency mocking
 
 ## 📈 Performance
 
@@ -314,24 +253,23 @@ Typical performance on modern hardware:
 
 ### Optimization Tips
 
-1. **Increase Concurrency**: Higher `--max-concurrent` for faster crawling
-2. **Reduce Delay**: Lower `--crawl-delay` for speed (respect server limits)
-3. **Limit Depth**: Lower `--max-depth` for focused crawling
-4. **Disable Dynamic**: Use `--disable-dynamic` for static-only crawling
-5. **SSD Storage**: Use SSD for database performance
+1. **Increase Concurrency**: `--max-concurrent 20` for faster crawling
+2. **Reduce Delay**: `--crawl-delay 0.5` for speed (respect server limits)
+3. **Limit Depth**: `--max-depth 3` for focused crawling
+4. **Disable Dynamic**: `--disable-dynamic` for static-only crawling
 
 ## 🔍 Monitoring
 
 ### Logging
 
-The tool provides comprehensive logging:
+The scripts provide comprehensive logging:
 
 ```bash
 # Enable debug logging
-python -m src.sitemap_generator.main --log-level DEBUG --log-file debug.log
+./run_sitemap_generator.sh --log-level DEBUG --log-file debug.log
 
 # Monitor progress
-tail -f debug.log
+tail -f logs/sitemap_generator_*.log
 ```
 
 ### Statistics
@@ -360,34 +298,29 @@ Average crawling rate: 1.4 URLs/second
 
 ### Common Issues
 
-#### 1. Playwright Installation
+#### 1. Permission Denied
 ```bash
-# Error: Playwright browsers not found
-playwright install chromium
-
-# Alternative: Use system Chrome
-export PLAYWRIGHT_BROWSERS_PATH=/usr/bin/google-chrome
+# Make scripts executable
+chmod +x quick_start.sh run_sitemap_generator.sh
 ```
 
-#### 2. Memory Issues
+#### 2. Playwright Installation Issues
+```bash
+# The quick_start.sh script handles this automatically, but if needed:
+source venv/bin/activate
+playwright install chromium
+```
+
+#### 3. Memory Issues
 ```bash
 # Reduce concurrency
-python -m src.sitemap_generator.main --max-concurrent 3
-
-# Disable dynamic crawling
-python -m src.sitemap_generator.main --disable-dynamic
+./run_sitemap_generator.sh --max-concurrent 3 --disable-dynamic
 ```
 
-#### 3. Rate Limiting
+#### 4. Rate Limiting
 ```bash
 # Increase delay between requests
-python -m src.sitemap_generator.main --crawl-delay 3.0
-```
-
-#### 4. Database Corruption
-```bash
-# Clean and restart
-python -m src.sitemap_generator.main --clean
+./run_sitemap_generator.sh --crawl-delay 3.0
 ```
 
 ### Debug Mode
@@ -395,152 +328,53 @@ python -m src.sitemap_generator.main --clean
 Enable debug mode for detailed troubleshooting:
 
 ```bash
-python -m src.sitemap_generator.main \
-    --log-level DEBUG \
-    --log-file debug.log \
-    --export-debug debug_urls.txt
+./run_sitemap_generator.sh --debug --log-level DEBUG --export-debug debug_urls.txt
 ```
-
-## 🔒 Security
-
-### Best Practices
-
-1. **Respect robots.txt**: Enabled by default
-2. **Rate Limiting**: Prevents server overload
-3. **User Agent**: Identifies the crawler
-4. **Timeout Handling**: Prevents hanging requests
-5. **Error Handling**: Graceful failure recovery
-
-### Compliance
-
-- Follows robots.txt directives
-- Implements polite crawling delays
-- Respects server response codes
-- Uses appropriate User-Agent string
 
 ## 🚀 Deployment
 
-### Production Deployment
+### Systemd Service (Production)
 
-#### Docker (Recommended)
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-RUN playwright install chromium
-
-COPY . .
-CMD ["python", "-m", "src.sitemap_generator.main"]
-```
-
-#### Systemd Service
-
-```ini
-[Unit]
-Description=Finploy Sitemap Generator
-After=network.target
-
-[Service]
-Type=simple
-User=crawler
-WorkingDirectory=/opt/finploy-sitemap-generator
-ExecStart=/usr/bin/python -m src.sitemap_generator.main
-Restart=on-failure
-RestartSec=300
-
-[Install]
-WantedBy=multi-user.target
-```
-
-#### Cron Job
+For production deployment, use the included systemd service:
 
 ```bash
-# Daily sitemap generation
-0 2 * * * cd /opt/finploy-sitemap-generator && python -m src.sitemap_generator.main --clean
+# Copy service file
+sudo cp finploy-sitemap.service /etc/systemd/system/
+
+# Enable and start service
+sudo systemctl daemon-reload
+sudo systemctl enable finploy-sitemap.service
+sudo systemctl start finploy-sitemap.service
+
+# Check status
+sudo systemctl status finploy-sitemap.service
 ```
 
-### Cloud Deployment
+### Cron Job (Scheduled)
 
-#### AWS EC2
-- Use t3.medium or larger instance
-- Install Chrome dependencies
-- Configure security groups for outbound HTTP/HTTPS
+For scheduled execution, use the cron templates:
 
-#### Google Cloud Platform
-- Use e2-standard-2 or larger instance
-- Enable Cloud Logging for monitoring
-- Use persistent disks for database storage
+```bash
+# Edit crontab
+crontab -e
 
-#### Azure VM
-- Use Standard_B2s or larger instance
-- Configure Network Security Groups
-- Use managed disks for storage
-
-## 📚 API Reference
-
-### Core Classes
-
-#### `SitemapCrawler`
-Main orchestrator class that coordinates all crawling activities.
-
-```python
-from src.sitemap_generator import SitemapCrawler, CrawlConfig
-
-config = CrawlConfig(
-    base_urls=["https://www.finploy.com"],
-    max_depth=3
-)
-
-crawler = SitemapCrawler(config)
-await crawler.initialize()
-statistics = await crawler.crawl_websites()
-await crawler.cleanup()
+# Add daily execution at 2 AM
+0 2 * * * /path/to/finploy-sitemap-generator/run_sitemap_generator.sh --clean
 ```
 
-#### `URLManager`
-Manages URL storage and retrieval using SQLite.
+## 📚 Project Structure
 
-```python
-from src.sitemap_generator.url_manager import URLManager
-
-manager = URLManager("urls.db")
-await manager.initialize()
-await manager.add_url("https://example.com")
-urls = await manager.get_next_urls_to_crawl(10)
 ```
-
-#### `SitemapWriter`
-Generates XML sitemaps from crawled URLs.
-
-```python
-from src.sitemap_generator.sitemap_writer import SitemapWriter
-
-writer = SitemapWriter("output/")
-sitemap_files = writer.generate_sitemaps(url_records)
-```
-
-### Configuration
-
-#### `CrawlConfig`
-Configuration dataclass for crawler settings.
-
-```python
-from src.sitemap_generator.types import CrawlConfig
-
-config = CrawlConfig(
-    base_urls=["https://www.finploy.com"],
-    max_depth=5,
-    max_concurrent_requests=10,
-    crawl_delay=1.0,
-    request_timeout=30,
-    database_path="data/urls.db",
-    sitemap_output_dir="data/sitemap/",
-    respect_robots_txt=True,
-    enable_dynamic_crawling=True
-)
+finploy-sitemap-generator/
+├── quick_start.sh              # Easy setup and run script
+├── run_sitemap_generator.sh    # Production runner script
+├── src/sitemap_generator/      # Python application code
+├── tests/                      # Test suite
+├── data/                       # Generated data (sitemaps, database)
+├── logs/                       # Log files
+├── .env                        # Environment configuration
+├── requirements.txt            # Python dependencies
+└── README.md                   # This file
 ```
 
 ## 🤝 Contributing
@@ -548,22 +382,16 @@ config = CrawlConfig(
 ### Development Setup
 
 ```bash
-# Clone repository
-git clone <repository-url>
+# Clone and set up development environment
+git clone https://github.com/nandini-asadi/finploy-sitemap-generator.git
 cd finploy-sitemap-generator
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-venv\Scripts\activate  # Windows
+# Use quick start for initial setup
+./quick_start.sh
 
 # Install development dependencies
-pip install -r requirements.txt
+source venv/bin/activate
 pip install pytest pytest-asyncio black isort mypy
-
-# Install Playwright
-playwright install chromium
 
 # Run tests
 pytest
@@ -571,28 +399,7 @@ pytest
 # Format code
 black src/ tests/
 isort src/ tests/
-
-# Type checking
-mypy src/
 ```
-
-### Code Style
-
-- Follow PEP 8 guidelines
-- Use Black for code formatting
-- Use isort for import sorting
-- Add type hints to all functions
-- Write comprehensive docstrings
-- Maintain test coverage >90%
-
-### Pull Request Process
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes with tests
-4. Run full test suite
-5. Format code with Black/isort
-6. Submit pull request
 
 ## 📄 License
 
@@ -602,10 +409,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Getting Help
 
-1. **Documentation**: Check this README and code comments
+1. **Documentation**: Check this README and the `SCRIPTS.md` file
 2. **Issues**: Create GitHub issue for bugs/features
-3. **Discussions**: Use GitHub Discussions for questions
-4. **Email**: Contact tech@finploy.com for urgent issues
+3. **Logs**: Check the `logs/` directory for detailed error information
 
 ### Reporting Bugs
 
@@ -616,15 +422,6 @@ When reporting bugs, please include:
 - Error messages and logs
 - Expected vs actual behavior
 - Steps to reproduce
-
-### Feature Requests
-
-For feature requests, please describe:
-
-- Use case and motivation
-- Proposed solution
-- Alternative approaches considered
-- Impact on existing functionality
 
 ---
 
