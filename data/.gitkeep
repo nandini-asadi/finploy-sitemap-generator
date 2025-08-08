@@ -1,0 +1,7 @@
+# This file ensures the data directory is tracked in git
+# while ignoring the actual data files (databases, sitemaps, etc.)
+# 
+# The data directory structure:
+# data/
+# ├── sitemap/     (generated XML sitemaps - ignored)
+# └── urls.db      (SQLite database - ignored)

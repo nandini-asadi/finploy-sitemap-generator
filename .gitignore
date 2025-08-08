@@ -1,0 +1,441 @@
+# Finploy Sitemap Generator - .gitignore
+# ===========================================
+# Comprehensive gitignore for Python sitemap generator project
+# Excludes generated data, logs, caches, and sensitive files
+
+# ===========================================
+# PYTHON SPECIFIC
+# ===========================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff (if applicable)
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff (if applicable)
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ===========================================
+# PROJECT SPECIFIC - GENERATED DATA
+# ===========================================
+
+# SQLite databases (contains crawled data)
+*.db
+*.sqlite
+*.sqlite3
+data/urls.db
+data/*.db
+
+# Generated sitemaps and output files
+data/sitemap/
+data/sitemaps/
+*.xml
+sitemap*.xml
+robots.txt
+
+# Log files and debugging output
+logs/
+*.log
+debug_*.txt
+crawl_*.log
+sitemap_generator_*.log
+
+# Temporary files and caches
+temp/
+tmp/
+cache/
+.cache/
+
+# Screenshots (if using Playwright debugging)
+screenshots/
+*.png
+*.jpg
+*.jpeg
+
+# Process ID files
+*.pid
+.sitemap_generator.pid
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# ===========================================
+# DEVELOPMENT TOOLS
+# ===========================================
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vim
+*.swp
+*.swo
+*.swn
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===========================================
+# PLAYWRIGHT SPECIFIC
+# ===========================================
+
+# Playwright browsers and cache
+test-results/
+playwright-report/
+playwright/.cache/
+.playwright/
+
+# Playwright screenshots and videos
+test-results/
+playwright-report/
+videos/
+traces/
+
+# ===========================================
+# SYSTEM FILES
+# ===========================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# SECURITY & SENSITIVE FILES
+# ===========================================
+
+# Environment variables and secrets (keep .env for assignment)
+# .env  # Commented out to include .env file for assignment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# API keys and credentials
+secrets.json
+credentials.json
+config/secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# SSH keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.pub
+
+# ===========================================
+# DEPLOYMENT & INFRASTRUCTURE
+# ===========================================
+
+# Docker
+.dockerignore
+Dockerfile.local
+docker-compose.override.yml
+.docker/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+*.kubeconfig
+
+# ===========================================
+# MONITORING & ANALYTICS
+# ===========================================
+
+# Performance monitoring
+*.prof
+*.pprof
+profile_*
+
+# Memory dumps
+*.hprof
+*.dump
+
+# ===========================================
+# CUSTOM PROJECT EXCLUSIONS
+# ===========================================
+
+# Custom configuration files (keep templates)
+config/local_*
+config/production_*
+config/development_*
+
+# User-specific run scripts
+run_local.sh
+run_dev.sh
+my_*.sh
+
+# Test data and fixtures
+test_data/
+fixtures/
+sample_data/
+
+# Documentation builds
+docs/build/
+docs/_build/
+
+# Temporary analysis files
+analysis/
+reports/temp/
+*.analysis
+
+# Large data files
+*.csv
+*.json.gz
+*.tar.gz
+*.zip
+
+# ===========================================
+# KEEP THESE FILES (NEGATIVE PATTERNS)
+# ===========================================
+
+# Keep important configuration templates
+!config/crawler_config.yaml.template
+!config/example_config.yaml
+
+# Keep example files
+!examples/
+!samples/
+
+# Keep documentation
+!docs/
+!*.md
+!LICENSE
+
+# Keep requirements and setup files
+!requirements*.txt
+!setup.py
+!pyproject.toml
+!Makefile
+
+# Keep scripts (but not user-specific ones)
+!*.sh
+!run_sitemap_generator.sh
+!quick_start.sh
+
+# Keep service files
+!*.service
+!cron_template.txt
+
+# ===========================================
+# ADDITIONAL PATTERNS
+# ===========================================
+
+# Ignore any file with 'local' in the name
+*local*
+*LOCAL*
+
+# Ignore numbered backup files
+*.1
+*.2
+*.3
+
+# Ignore compressed files
+*.tar
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+
+# Ignore patch files
+*.patch
+*.diff
+
+# Ignore core dumps
+core
+core.*

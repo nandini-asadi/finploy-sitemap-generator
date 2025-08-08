@@ -1,0 +1,43 @@
+[Unit]
+Description=Finploy Sitemap Generator
+Documentation=file:///opt/finploy-sitemap-generator/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/finploy-sitemap-generator
+ExecStart=/opt/finploy-sitemap-generator/run_sitemap_generator.sh --log-level INFO
+ExecStartPre=/bin/bash -c 'mkdir -p /opt/finploy-sitemap-generator/logs'
+
+# Environment variables
+Environment=FINPLOY_BASE_URLS=https://www.finploy.com,https://finploy.co.uk
+Environment=FINPLOY_MAX_DEPTH=5
+Environment=FINPLOY_MAX_CONCURRENT=10
+Environment=FINPLOY_CRAWL_DELAY=1.0
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/finploy-sitemap-generator/data
+ReadWritePaths=/opt/finploy-sitemap-generator/logs
+
+# Resource limits
+MemoryMax=1G
+CPUQuota=80%
+
+# Restart policy
+Restart=on-failure
+RestartSec=300
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=finploy-sitemap
+
+[Install]
+WantedBy=multi-user.target

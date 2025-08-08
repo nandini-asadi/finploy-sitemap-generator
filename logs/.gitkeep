@@ -1,0 +1,4 @@
+# This file ensures the logs directory is tracked in git
+# while ignoring the actual log files
+# 
+# Log files are generated during crawling and should not be committed
