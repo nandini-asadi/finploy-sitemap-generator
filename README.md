@@ -65,6 +65,14 @@ cd finploy-sitemap-generator
 - ✅ Runs the sitemap generator with default settings
 - ✅ Shows you where the generated files are located
 
+### 🎯 Execution Example
+
+Here's what a successful execution looks like:
+
+![Quick Start Execution](images/quick_start_execution.png)
+
+*Screenshot showing successful execution of the quick start script with all dependencies installed and sitemap generation completed.*
+
 ### Option 2: Production Script (Advanced)
 
 For more control and production use, use the main runner script:
@@ -197,6 +205,14 @@ data/sitemap/
 └── robots.txt               # Robots.txt with sitemap references
 ```
 
+### 📁 Example Output Files
+
+Here's an example of the generated output files after successful execution:
+
+![Output Files](images/output_files.png)
+
+*Screenshot showing the generated sitemap files, database, and logs after successful crawling.*
+
 ### Sitemap Structure
 
 ```xml
@@ -293,6 +309,14 @@ Crawling duration: 2.5h
 Average crawling rate: 1.4 URLs/second
 ==========================================
 ```
+
+### 📊 Live Execution Statistics
+
+Here's an example of the real-time statistics displayed during actual crawling:
+
+![Crawling Statistics](images/crawling_statistics.png)
+
+*Screenshot showing live crawling statistics with URL discovery, success rates, and performance metrics during actual execution.*
 
 ## 🐛 Troubleshooting
 
