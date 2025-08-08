@@ -14,13 +14,12 @@ venv/
 .pytest_cache/
 .mypy_cache/
 
-# Project generated data
+# Project generated data - Database files only
 *.db
 *.sqlite
-data/sitemap/
-*.xml
-sitemap*.xml
-robots.txt
+data/urls.db
+
+# Logs (but keep sitemap output visible for demonstration)
 logs/
 *.log
 
