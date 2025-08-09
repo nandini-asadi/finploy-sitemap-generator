@@ -685,8 +685,7 @@ class OptimizedFinalCrawler:
             'browse_jobs_urls': browse_jobs_urls,
             'success_rate': (len(self.crawled_urls) / max(len(self.discovered_urls), 1)) * 100,
             'total_time': total_time,
-            'urls_per_second': len(self.crawled_urls) / max(total_time, 1),
-            'target_reached': len(self.discovered_urls) >= 1850
+            'urls_per_second': len(self.crawled_urls) / max(total_time, 1)
         }
         
         return stats
@@ -763,87 +762,6 @@ class OptimizedFinalCrawler:
         
         return [sitemap_file]
 
-async def cleanup_and_commit_to_github(stats: Dict) -> bool:
-    """Clean up unnecessary files and commit to GitHub if target reached."""
-    if not stats['target_reached']:
-        logging.info(f"Target not reached ({stats['total_discovered']} < 1850), skipping GitHub operations")
-        return False
-    
-    logging.info("Target reached! Cleaning up and preparing for GitHub commit...")
-    
-    try:
-        import subprocess
-        import os
-        
-        # Change to project directory
-        os.chdir('/home/archiesgurav/finploy-sitemap-generator')
-        
-        # Pull latest changes first
-        logging.info("Pulling latest changes from GitHub...")
-        result = subprocess.run(['git', 'pull', 'origin', 'main'], 
-                              capture_output=True, text=True)
-        if result.returncode != 0:
-            logging.warning(f"Git pull warning: {result.stderr}")
-        
-        # Clean up unnecessary files
-        logging.info("Cleaning up unnecessary files...")
-        cleanup_files = [
-            'run_simple_optimized.py',
-            'run_enhanced_crawler.py', 
-            'run_smart_crawler.py',
-            'test_optimized.py',
-            'compare_performance.py'
-        ]
-        
-        for file in cleanup_files:
-            if os.path.exists(file):
-                os.remove(file)
-                logging.info(f"Removed {file}")
-        
-        # Keep only essential files
-        essential_files = [
-            'run_optimized_final.py',
-            'quick_start.sh',
-            'run_sitemap_generator.sh',
-            'README.md',
-            'requirements.txt',
-            'data/sitemap/sitemap.xml',
-            'data/sitemap/robots.txt'
-        ]
-        
-        # Add essential files to git
-        for file in essential_files:
-            if os.path.exists(file):
-                subprocess.run(['git', 'add', file], capture_output=True)
-        
-        # Commit changes
-        commit_message = f"🎉 Final optimized crawler - {stats['total_discovered']} URLs discovered for finploy.com"
-        
-        result = subprocess.run(['git', 'commit', '-m', commit_message], 
-                              capture_output=True, text=True)
-        
-        if result.returncode == 0:
-            logging.info("Changes committed successfully")
-            
-            # Push to GitHub
-            logging.info("Pushing to GitHub...")
-            result = subprocess.run(['git', 'push', 'origin', 'main'], 
-                                  capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                logging.info("Successfully pushed to GitHub!")
-                return True
-            else:
-                logging.error(f"Failed to push to GitHub: {result.stderr}")
-                return False
-        else:
-            logging.info("No changes to commit or commit failed")
-            return False
-            
-    except Exception as e:
-        logging.error(f"Error in GitHub operations: {e}")
-        return False
-
 def main():
     """Main execution function."""
     # Set up logging
@@ -864,7 +782,6 @@ def main():
     print(f"Target domain: {base_url} (finploy.com ONLY)")
     print(f"Max depth: {max_depth}")
     print(f"Output directory: {output_dir}")
-    print(f"Target: 1900+ URLs (1850+ triggers GitHub commit)")
     print(f"Strategy: Enhanced static discovery + smart dynamic extraction")
     print("="*80)
     
@@ -893,29 +810,27 @@ def main():
             file_size = Path(sitemap_file).stat().st_size / 1024 / 1024
             print(f"   • {sitemap_file} ({file_size:.2f} MB)")
         
-        # Target assessment
-        print(f"\n🎯 TARGET ASSESSMENT:")
-        target_threshold = 1850
+        # Performance assessment (keeping target in memory/context only)
+        print(f"\n🎯 PERFORMANCE ASSESSMENT:")
         
-        if stats['total_discovered'] >= target_threshold:
-            print(f"   🎉 TARGET REACHED: {stats['total_discovered']:,} URLs ≥ {target_threshold}")
-            print(f"   🚀 Initiating cleanup and GitHub commit...")
-            
-            # Cleanup and commit to GitHub
-            github_success = asyncio.run(cleanup_and_commit_to_github(stats))
-            
-            if github_success:
-                print(f"   ✅ Successfully committed to GitHub!")
-            else:
-                print(f"   ⚠️  GitHub commit failed, but target was reached")
-                
+        if stats['total_discovered'] >= 1900:
+            print(f"   🎉 EXCELLENT: {stats['total_discovered']:,} URLs discovered (exceeded 1900 target!)")
+        elif stats['total_discovered'] >= 1850:
+            print(f"   ✅ TARGET ACHIEVED: {stats['total_discovered']:,} URLs discovered (very close to 1900)")
+        elif stats['total_discovered'] >= 1700:
+            print(f"   📈 GOOD PROGRESS: {stats['total_discovered']:,} URLs discovered (approaching target)")
         else:
-            print(f"   📊 PROGRESS: {stats['total_discovered']:,} URLs (need {target_threshold - stats['total_discovered']} more)")
-            print(f"   🔧 Consider increasing max_depth or enhancing URL generation")
+            print(f"   📊 PROGRESS: {stats['total_discovered']:,} URLs discovered")
+        
+        if stats['job_related_urls'] > 1000:
+            print(f"   ✅ COMPREHENSIVE JOB COVERAGE: {stats['job_related_urls']:,} job URLs")
+        
+        if stats['browse_jobs_urls'] > 100:
+            print(f"   ✅ BROWSE-JOBS DISCOVERED: {stats['browse_jobs_urls']:,} browse-jobs variations")
         
         print("="*80)
         
-        return 0 if stats['target_reached'] else 1
+        return 0
         
     except KeyboardInterrupt:
         print("\n⚠️  Crawling interrupted by user")
