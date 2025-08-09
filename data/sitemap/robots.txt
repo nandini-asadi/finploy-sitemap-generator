@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://www.finploy.com/sitemap/sitemap.xml
+Sitemap: https://www.finploy.com/sitemap.xml
