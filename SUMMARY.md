@@ -225,4 +225,4 @@ The project demonstrates expert-level Python development with modern best practi
 
 **Project Status**: ✅ **COMPLETE AND READY FOR PRODUCTION**
 
-**Built with ❤️ by Amazon Q Developer**
+**Built with ❤️ by for the Finploy Team**
